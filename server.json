@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.pipeworx-io/imf-portwatch",
+  "title": "Imf Portwatch",
+  "description": "IMF PortWatch MCP — global maritime trade & chokepoint signals (free, no auth)",
+  "version": "0.1.0",
+  "websiteUrl": "https://pipeworx.io/packs/imf-portwatch",
+  "repository": {
+    "url": "https://github.com/pipeworx-io/mcp-imf-portwatch",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://gateway.pipeworx.io/imf-portwatch/mcp"
+    }
+  ]
+}
