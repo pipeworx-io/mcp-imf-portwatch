@@ -2,12 +2,18 @@
 
 IMF PortWatch MCP — global maritime trade & chokepoint signals (free, no auth)
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 965+ live data sources.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1394+ live data sources.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
+| `chokepoints_list` | List the 8 major maritime chokepoints PortWatch tracks (Suez, Panama, Bosphorus, Gibraltar, Dover, Malacca, Hormuz, Bab-el-Mandeb) with annual vessel counts, traffic mix by cargo type (container / dry bulk / tanker / RoRo / general), and top industries by volume. Use to discover what a chokepoint normally carries — for live daily throughput call chokepoint_daily_traffic. |
+| `chokepoint_daily_traffic` | Daily vessel counts and aggregate capacity (deadweight tonnage) transiting a specific chokepoint. Returns time series ordered most-recent-first, with per-cargo-type breakdown (container / dry bulk / general cargo / RoRo / tanker). Use for "is Suez traffic back to normal after the Houthi attacks", "Hormuz throughput vs 30d average", or any bet predicated on a chokepoint disruption persisting. Accepts friendly names (suez / panama / hormuz / bab-el-mandeb / etc.) or PortWatch portid (chokepoint1..8). |
+| `port_search` | Search the PortWatch port database (1,500+ ports globally) by name, country, or ISO3. Returns matching ports with country, continent, latitude/longitude, annual vessel counts by cargo type, top industries, and the port's share of the country's maritime imports/exports. Useful for identifying which ports would be affected by a country-level disruption, or finding the LOCODE / portid for a named port. |
+| `recent_disruptions` | Port-affecting disruption events tracked by PortWatch — tropical cyclones, floods, earthquakes, conflict events — with start/end dates, alert level (GREEN/ORANGE/RED), severity, affected port count, and impacted population. Filter by country, alert level, or year. Use for "what disrupted shipping in the last month", "which port closures hit our supply chain", or to validate a bet on whether a current disruption is escalating. |
+| `chokepoint_status` | Chokepoint traffic status for one maritime chokepoint: the most recent settled day of vessel transits scored against a trailing baseline, so an agent can tell at a glance whether shipping through that strait or canal is above, below, or at its normal run rate. Answers "is shipping through the Strait of Hormuz down", "Suez Canal transit volume this week", "Panama Canal ship counts vs normal", "maritime chokepoint disruption check", "tanker traffic anomaly at Bab el-Mandeb". Returns the latest day (total vessels, per-vessel-type counts, aggregate capacity in deadweight tonnage), data_lag_days plus a freshness_note, the baseline mean with delta / percent deviation / direction (above, below, normal), 7-day and 30-day means, the same percent deviation per vessel type (tanker, container, dry_bulk, general_cargo, roro — a tanker-only drop at Hormuz is the tradeable signal), and the min and max daily total in the window with their dates. Source is IMF PortWatch daily AIS-derived transit counts, published with a multi-day lag, so the "latest" day is the most recent settled day rather than a live count. Accepts forgiving names — "Hormuz", "Strait of Hormuz", "hormuz", "Suez", "Panama", "Bab el-Mandeb", "Malacca", "Taiwan", "Bosphorus", "Gibraltar", "Dover" — or a PortWatch portid like "chokepoint6". Examples: chokepoint_status({chokepoint: "Hormuz"}); chokepoint_status({chokepoint: "Suez Canal", baseline_days: 30}); chokepoint_status({chokepoint: "Panama"}). |
+| `chokepoint_compare` | Compare chokepoint traffic status across 2 to 6 maritime chokepoints side by side and rank them by how far each one has deviated from its own trailing baseline, so an agent can spot which strait or canal is the anomalous one. Answers "which maritime chokepoint is disrupted right now", "Suez Canal transit volume vs Bab el-Mandeb", "compare Panama Canal ship counts to Hormuz", "tanker traffic anomaly across chokepoints". For each chokepoint returns the latest settled day and its total, the baseline mean over the window, the delta, the percent deviation, the direction (above, below, normal), and the per-vessel-type percent deviation; results are sorted with the largest absolute deviation first. Reports data_lag_days and a freshness_note for the whole comparison. Source is IMF PortWatch daily AIS-derived transit counts, published with a multi-day lag, so every "latest" figure is the most recent settled day rather than a live count. Names are matched forgivingly ("Hormuz", "Strait of Hormuz", "Suez", "Panama", "Bab el-Mandeb", "Malacca", "Taiwan", "Bosphorus", "Gibraltar", "Dover") or accept a portid. Examples: chokepoint_compare({chokepoints: ["Hormuz", "Suez", "Bab el-Mandeb"]}); chokepoint_compare({chokepoints: ["Suez", "Cape of Good Hope"], days: 90}); chokepoint_compare({chokepoints: ["Panama", "Suez", "Malacca", "Hormuz"], days: 14}). |
 
 ## Quick Start
 
@@ -23,7 +29,7 @@ Add to your MCP client (Claude Desktop, Cursor, Windsurf, etc.):
 }
 ```
 
-Or connect to the full Pipeworx gateway for access to all 965+ data sources:
+Or connect to the full Pipeworx gateway for access to all 1394+ data sources:
 
 ```json
 {
@@ -47,7 +53,7 @@ The gateway picks the right tool and fills the arguments automatically.
 
 ## More
 
-- [All tools and guides](https://github.com/pipeworx-io/examples)
+- [Docs and guides](https://pipeworx.io/docs)
 - [pipeworx.io](https://pipeworx.io)
 
 ## License
