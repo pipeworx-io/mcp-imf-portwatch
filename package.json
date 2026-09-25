@@ -1,20 +1,32 @@
 {
   "name": "@pipeworx/mcp-imf-portwatch",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "IMF PortWatch MCP — global maritime trade & chokepoint signals (free, no auth)",
   "type": "module",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "bin": {
+    "mcp-imf-portwatch": "bin/cli.js"
+  },
   "keywords": ["mcp", "mcp-server", "model-context-protocol", "pipeworx", "imf-portwatch"],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pipeworx-io/mcp-imf-portwatch"
+    "url": "git+https://github.com/pipeworx-io/mcp-imf-portwatch.git"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "tsx": "^4.19.0"
+  },
   "devDependencies": {
-    "typescript": "^5.7.0"
+    "typescript": "^5.9.3",
+    "@cloudflare/workers-types": "^4.20260405.1"
+  },
+  "pipeworx": {
+    "sourceHash": "v1-f1ea8fbfd4c87d9e08f9dbbab82c9db3de1cf46eef56e8c9499c6798dc85cb53",
+    "sourceCommit": "70cd53748fc9f9a43ed3681d751bfa96e701efd2"
   }
 }
