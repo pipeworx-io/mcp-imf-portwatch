@@ -3,7 +3,7 @@
   "name": "io.github.pipeworx-io/imf-portwatch",
   "title": "Imf Portwatch",
   "description": "IMF PortWatch MCP — global maritime trade & chokepoint signals (free, no auth)",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "websiteUrl": "https://pipeworx.io/packs/imf-portwatch",
   "repository": {
     "url": "https://github.com/pipeworx-io/mcp-imf-portwatch",
