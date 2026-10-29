@@ -1,0 +1,119 @@
+[
+  {
+    "name": "chokepoints_list",
+    "description": "List the 8 major maritime chokepoints PortWatch tracks (Suez, Panama, Bosphorus, Gibraltar, Dover, Malacca, Hormuz, Bab-el-Mandeb) with annual vessel counts, traffic mix by cargo type (container / dry bulk / tanker / RoRo / general), and top industries by volume. Use to discover what a chokepoint normally carries — for live daily throughput call chokepoint_daily_traffic.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "chokepoint_daily_traffic",
+    "description": "Daily vessel counts and aggregate capacity (deadweight tonnage) transiting a specific chokepoint. Returns time series ordered most-recent-first, with per-cargo-type breakdown (container / dry bulk / general cargo / RoRo / tanker). Use for \"is Suez traffic back to normal after the Houthi attacks\", \"Hormuz throughput vs 30d average\", or any bet predicated on a chokepoint disruption persisting. Accepts friendly names (suez / panama / hormuz / bab-el-mandeb / etc.) or PortWatch portid (chokepoint1..8).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "chokepoint": {
+          "type": "string",
+          "description": "Friendly name (e.g. \"Hormuz\", \"Suez Canal\") or portid (\"chokepoint7\")"
+        },
+        "days": {
+          "type": "number",
+          "description": "Lookback window in days (default 30, max 365). Data is daily."
+        }
+      },
+      "required": [
+        "chokepoint"
+      ]
+    }
+  },
+  {
+    "name": "port_search",
+    "description": "Search the PortWatch port database (1,500+ ports globally) by name, country, or ISO3. Returns matching ports with country, continent, latitude/longitude, annual vessel counts by cargo type, top industries, and the port's share of the country's maritime imports/exports. Useful for identifying which ports would be affected by a country-level disruption, or finding the LOCODE / portid for a named port.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Free-text portname match (e.g. \"Rotterdam\", \"Houston\", \"Singapore\")"
+        },
+        "country": {
+          "type": "string",
+          "description": "Country filter — full name (\"Netherlands\") or ISO3 (\"NLD\")"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Max results (default 20, max 100)"
+        }
+      }
+    }
+  },
+  {
+    "name": "recent_disruptions",
+    "description": "Port-affecting disruption events tracked by PortWatch — tropical cyclones, floods, earthquakes, conflict events — with start/end dates, alert level (GREEN/ORANGE/RED), severity, affected port count, and impacted population. Filter by country, alert level, or year. Use for \"what disrupted shipping in the last month\", \"which port closures hit our supply chain\", or to validate a bet on whether a current disruption is escalating.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Filter to a single country name (e.g. \"Mozambique\")"
+        },
+        "alert_level": {
+          "type": "string",
+          "description": "RED | ORANGE | GREEN — minimum alert level to include"
+        },
+        "year": {
+          "type": "number",
+          "description": "Filter to events from this calendar year"
+        },
+        "limit": {
+          "type": "number",
+          "description": "Max events to return (default 25, max 100)"
+        }
+      }
+    }
+  },
+  {
+    "name": "chokepoint_status",
+    "description": "Chokepoint traffic status for one maritime chokepoint: the most recent settled day of vessel transits scored against a trailing baseline, so an agent can tell at a glance whether shipping through that strait or canal is above, below, or at its normal run rate. Answers \"is shipping through the Strait of Hormuz down\", \"Suez Canal transit volume this week\", \"Panama Canal ship counts vs normal\", \"maritime chokepoint disruption check\", \"tanker traffic anomaly at Bab el-Mandeb\". Returns the latest day (total vessels, per-vessel-type counts, aggregate capacity in deadweight tonnage), data_lag_days plus a freshness_note, the baseline mean with delta / percent deviation / direction (above, below, normal), 7-day and 30-day means, the same percent deviation per vessel type (tanker, container, dry_bulk, general_cargo, roro — a tanker-only drop at Hormuz is the tradeable signal), and the min and max daily total in the window with their dates. Source is IMF PortWatch daily AIS-derived transit counts, published with a multi-day lag, so the \"latest\" day is the most recent settled day rather than a live count. Accepts forgiving names — \"Hormuz\", \"Strait of Hormuz\", \"hormuz\", \"Suez\", \"Panama\", \"Bab el-Mandeb\", \"Malacca\", \"Taiwan\", \"Bosphorus\", \"Gibraltar\", \"Dover\" — or a PortWatch portid like \"chokepoint6\". Examples: chokepoint_status({chokepoint: \"Hormuz\"}); chokepoint_status({chokepoint: \"Suez Canal\", baseline_days: 30}); chokepoint_status({chokepoint: \"Panama\"}).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "chokepoint": {
+          "type": "string",
+          "description": "Chokepoint name, alias, or portid — e.g. \"Hormuz\", \"Strait of Hormuz\", \"Suez Canal\", \"Bab el-Mandeb\", \"chokepoint6\""
+        },
+        "baseline_days": {
+          "type": "number",
+          "description": "Length of the trailing baseline window in days, measured backward from the day before the latest settled day (default 90, min 7, max 364)."
+        }
+      },
+      "required": [
+        "chokepoint"
+      ]
+    }
+  },
+  {
+    "name": "chokepoint_compare",
+    "description": "Compare chokepoint traffic status across 2 to 6 maritime chokepoints side by side and rank them by how far each one has deviated from its own trailing baseline, so an agent can spot which strait or canal is the anomalous one. Answers \"which maritime chokepoint is disrupted right now\", \"Suez Canal transit volume vs Bab el-Mandeb\", \"compare Panama Canal ship counts to Hormuz\", \"tanker traffic anomaly across chokepoints\". For each chokepoint returns the latest settled day and its total, the baseline mean over the window, the delta, the percent deviation, the direction (above, below, normal), and the per-vessel-type percent deviation; results are sorted with the largest absolute deviation first. Reports data_lag_days and a freshness_note for the whole comparison. Source is IMF PortWatch daily AIS-derived transit counts, published with a multi-day lag, so every \"latest\" figure is the most recent settled day rather than a live count. Names are matched forgivingly (\"Hormuz\", \"Strait of Hormuz\", \"Suez\", \"Panama\", \"Bab el-Mandeb\", \"Malacca\", \"Taiwan\", \"Bosphorus\", \"Gibraltar\", \"Dover\") or accept a portid. Examples: chokepoint_compare({chokepoints: [\"Hormuz\", \"Suez\", \"Bab el-Mandeb\"]}); chokepoint_compare({chokepoints: [\"Suez\", \"Cape of Good Hope\"], days: 90}); chokepoint_compare({chokepoints: [\"Panama\", \"Suez\", \"Malacca\", \"Hormuz\"], days: 14}).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "chokepoints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Two to six chokepoint names, aliases, or portids — e.g. [\"Hormuz\", \"Suez\", \"Bab el-Mandeb\"]"
+        },
+        "days": {
+          "type": "number",
+          "description": "Length of the trailing baseline window in days for every chokepoint (default 30, min 7, max 364)."
+        }
+      },
+      "required": [
+        "chokepoints"
+      ]
+    }
+  }
+]
