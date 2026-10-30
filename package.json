@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-imf-portwatch",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "IMF PortWatch MCP — global maritime trade & chokepoint signals (free, no auth)",
   "type": "module",
   "main": "lib/index.js",
@@ -27,7 +27,7 @@
     "mode": "gateway",
     "slug": "imf-portwatch",
     "gatewaySlug": "imf-portwatch",
-    "sourceHash": "v1-74107b27ee7d2092809407a10418ebdef7beaf2fb950ee551c681a4069fd5fbb",
-    "sourceCommit": "4844029e402d6bd2fe735add8abf6d46735f8ed5"
+    "sourceHash": "v1-3169427a8c379ffa5a134616f08c21d08cc19921f2064b0fa9f5e0d92c4983da",
+    "sourceCommit": "7934243b592c83066b8e4a370708e4a398992182"
   }
 }

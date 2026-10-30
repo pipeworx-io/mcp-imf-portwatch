@@ -2,13 +2,13 @@
 
 IMF PortWatch MCP — global maritime trade & chokepoint signals (free, no auth)
 
-Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1856+ live data sources. This is an independent, unofficial integration — not affiliated with, endorsed by, or published by the upstream provider.
+Part of [Pipeworx](https://pipeworx.io) — an MCP gateway connecting AI agents to 1858+ live data sources. This is an independent, unofficial integration — not affiliated with, endorsed by, or published by the upstream provider.
 
 ## Tools
 
 | Tool | Description |
 |------|-------------|
-| `chokepoints_list` | List the 8 major maritime chokepoints PortWatch tracks (Suez, Panama, Bosphorus, Gibraltar, Dover, Malacca, Hormuz, Bab-el-Mandeb) with annual vessel counts, traffic mix by cargo type (container / dry bulk / tanker / RoRo / general), and top industries by volume. Use to discover what a chokepoint normally carries — for live daily throughput call chokepoint_daily_traffic. |
+| `chokepoints_list` | List the 8 major maritime chokepoints PortWatch tracks (Suez, Panama, Bosphorus, Gibraltar, Dover, Malacca, Hormuz, Bab-el-Mandeb) with annual vessel counts, traffic mix by cargo type (container / dry bulk / tanker / RoRo / general), and top industries by volume. Use to discover what a chokepoint normally carries — for live daily throughput call chokepoint_daily_traffic. The response carries served_from: "primary" or "fallback"; when IMF's reference layer is down it is built from the daily transit layer and omits annual totals, lat/lon and top industries (see missing_vs_primary). |
 | `chokepoint_daily_traffic` | Daily vessel counts and aggregate capacity (deadweight tonnage) transiting a specific chokepoint. Returns time series ordered most-recent-first, with per-cargo-type breakdown (container / dry bulk / general cargo / RoRo / tanker). Use for "is Suez traffic back to normal after the Houthi attacks", "Hormuz throughput vs 30d average", or any bet predicated on a chokepoint disruption persisting. Accepts friendly names (suez / panama / hormuz / bab-el-mandeb / etc.) or PortWatch portid (chokepoint1..8). |
 | `port_search` | Search the PortWatch port database (1,500+ ports globally) by name, country, or ISO3. Returns matching ports with country, continent, latitude/longitude, annual vessel counts by cargo type, top industries, and the port's share of the country's maritime imports/exports. Useful for identifying which ports would be affected by a country-level disruption, or finding the LOCODE / portid for a named port. |
 | `recent_disruptions` | Port-affecting disruption events tracked by PortWatch — tropical cyclones, floods, earthquakes, conflict events — with start/end dates, alert level (GREEN/ORANGE/RED), severity, affected port count, and impacted population. Filter by country, alert level, or year. Use for "what disrupted shipping in the last month", "which port closures hit our supply chain", or to validate a bet on whether a current disruption is escalating. |
@@ -59,7 +59,7 @@ directly, instead of just this one's:
 }
 ```
 
-Both URLs reach the same gateway and the same 1856+ data sources. The
+Both URLs reach the same gateway and the same 1858+ data sources. The
 only difference is which pack's tools are listed **directly**; `ask_pipeworx`
 reaches all of them from either one.
 

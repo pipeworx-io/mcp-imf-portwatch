@@ -1,7 +1,7 @@
 [
   {
     "name": "chokepoints_list",
-    "description": "List the 8 major maritime chokepoints PortWatch tracks (Suez, Panama, Bosphorus, Gibraltar, Dover, Malacca, Hormuz, Bab-el-Mandeb) with annual vessel counts, traffic mix by cargo type (container / dry bulk / tanker / RoRo / general), and top industries by volume. Use to discover what a chokepoint normally carries — for live daily throughput call chokepoint_daily_traffic.",
+    "description": "List the 8 major maritime chokepoints PortWatch tracks (Suez, Panama, Bosphorus, Gibraltar, Dover, Malacca, Hormuz, Bab-el-Mandeb) with annual vessel counts, traffic mix by cargo type (container / dry bulk / tanker / RoRo / general), and top industries by volume. Use to discover what a chokepoint normally carries — for live daily throughput call chokepoint_daily_traffic. The response carries served_from: \"primary\" or \"fallback\"; when IMF's reference layer is down it is built from the daily transit layer and omits annual totals, lat/lon and top industries (see missing_vs_primary).",
     "inputSchema": {
       "type": "object",
       "properties": {}
