@@ -348,5 +348,18 @@ jobs:
             # release's version will get packages correctly from here.
             echo "::warning::$server_name $version is already on the MCP Registry (likely remotes-only, from before this fix) and a GitHub-OIDC token cannot edit an existing entry to add packages -- this will self-correct on the next version bump"
           else
-            echo "::warning::MCP Registry listing failed for $name@$version: $out"
+            # fleet #3995: this used to be a bare ::warning:: with no exit
+            # after it, so the step's exit code was whatever that `echo`
+            # returned -- always 0. A genuine listing failure (not the
+            # benign "already exists" case above) therefore reported SUCCESS
+            # at the step, job and run level while the registry entry was
+            # never created: measured live on mcp-nuget run 41718457549
+            # (2026-11-03), where `mcp-publisher publish` failed with "dial
+            # tcp ...: connect: connection refused" and the run still read
+            # green. The whole point of failing this step (see the comment
+            # above the mcpname-wait block) is that "a red run is what makes
+            # it visible" and "Re-run failed jobs" retries it -- a step that
+            # cannot go red for a real failure defeats that on purpose.
+            echo "::error::MCP Registry listing failed for $name@$version: $out"
+            exit 1
           fi
